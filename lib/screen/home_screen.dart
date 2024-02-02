@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:investment_quotes_app_v2/screen/setting_screen.dart';
 import 'package:investment_quotes_app_v2/screen/favorite_list_screen.dart';
 import 'package:investment_quotes_app_v2/screen/quotes_screen.dart';
-import 'package:investment_quotes_app_v2/database/database_config.dart';
+import 'package:investment_quotes_app_v2/database/database_service.dart';
 import 'package:investment_quotes_app_v2/model/quote.dart';
 
 
@@ -24,10 +24,10 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
-  final DatabaseConfig _databaseConfig = DatabaseConfig();
-  Future<List<Quote>> _quoteList = DatabaseConfig()
-      .databaseInit()
-      .then((_) => DatabaseConfig().selectQuotes());
+  // final DatabaseConfig _databaseConfig = DatabaseConfig();
+  // Future<List<Quote>> _quoteList = DatabaseConfig()
+  //     .databaseInit()
+  //     .then((_) => DatabaseConfig().selectQuotes());
 
   // Quote newQuote = Quote(id: 1, quote: 'This is a new quote!', isLiked: false);
   // _databaseConfig.insertQuote(newQuote);
