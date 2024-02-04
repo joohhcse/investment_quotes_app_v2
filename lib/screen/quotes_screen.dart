@@ -24,11 +24,12 @@ class _QuotesScreenState extends State<QuotesScreen> {
     // "8기본적인 이야기는 단순하고 끝이 없다. \n주식은 복권이 아니다. \n모든 주식에는 회사가 붙어 있다. \n\n - 피터 린치 ",
   ];
 
+
   @override
   void initState() {
     super.initState();
-    // quotes.shuffle();  //temp remove
-    // _getQuotes();
+    _getQuotes();
+    _quotes.shuffle();  //temp remove
   }
 
   Future<void> _getQuotes() async {
@@ -36,8 +37,6 @@ class _QuotesScreenState extends State<QuotesScreen> {
     if (mounted) {
       setState(() => _quotes = quotes);
     }
-    print('_quotes.length >>');
-    print(_quotes.length);
   }
 
   @override
@@ -47,7 +46,7 @@ class _QuotesScreenState extends State<QuotesScreen> {
         itemCount: _quotes.length,
         itemBuilder: (context, index) {
           return QuotePage(
-            quote: _quotes[index].toString(),
+            quote: _quotes[index].quote.toString(),
             onLike: () async {
               // Navigator.push(
               //   context,
@@ -99,6 +98,9 @@ class QuotePage extends StatelessWidget {
               Icons.favorite_border,
               size: 30.0,
               color: Colors.red,
+              // isLiked ? Icons.favorite : Icons.favorite_border,
+              // size: 30.0,
+              // color: isLiked ? Colors.red : null,
             ),
           ),
         ],

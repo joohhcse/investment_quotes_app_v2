@@ -1,23 +1,23 @@
-class Quote {
+class Favorite {
   final int? id;
   final String quote;
-  final bool isLiked;
+  final DateTime date;
 
-  const Quote({
+  const Favorite({
     this.id,
     required this.quote,
-    required this.isLiked,
+    required this.date,
   });
 
-  Quote copyWith({
+  Favorite copyWith({
     int? id,
     String? quote,
-    bool? isLiked,
+    DateTime? date,
   }) {
-    return Quote(
+    return Favorite(
       id: id ?? this.id,
       quote: quote ?? this.quote,
-      isLiked: isLiked ?? this.isLiked,
+      date: date ?? this.date,
     );
   }
 
@@ -25,16 +25,17 @@ class Quote {
     return {
       'id': id,
       'quote': quote,
-      'isLiked' : isLiked ? 1 : 0,
+      'date': date.toIso8601String(),
     };
   }
 
-  factory Quote.fromMap(Map<String, dynamic> map) {
-    return Quote(
+  factory Favorite.fromMap(Map<String, dynamic> map) {
+    return Favorite(
       id: map['id'] as int,
       quote: map['quote'] as String,
-      isLiked: map['isLiked'] as int == 1,
+      date: DateTime.parse(map['date'] as String),
     );
   }
+
 
 }

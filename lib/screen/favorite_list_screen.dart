@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:investment_quotes_app_v2/screen/quotes_screen.dart';
-import 'package:investment_quotes_app_v2/model/Quote.dart';
 import 'package:investment_quotes_app_v2/database/database_service.dart';
+import 'package:investment_quotes_app_v2/model/quote.dart';
+import 'package:investment_quotes_app_v2/model/Favorite.dart';
+
 
 class FavoriteListScreen extends StatefulWidget {
   // const FavoriteListScreen({Key? key}) : super(key: key);
@@ -24,15 +26,25 @@ class _FavoriteListScreenState extends State<FavoriteListScreen> {
   // "다른 사람들이 다음 기적을 쫓고 있을 때에도 \n당신이 이해하고, 믿고, 지키려고 하는 것만 사라. \n\n - 피터 린치 ",
   // "기본적인 이야기는 단순하고 끝이 없다. \n주식은 복권이 아니다. \n모든 주식에는 회사가 붙어 있다. \n\n - 피터 린치 ",
 
-  List<String> favoriteQuotes = [
+  List<Favorite> _favoriteQuotes = [
   ];
 
   @override
   void initState() {
     super.initState();
+    _getFavoriteQuotes();
+
     // 초기에 추가된 명언이 있다면 리스트에 추가
-    if (widget.likedQuote.isNotEmpty) {
-      favoriteQuotes.add(widget.likedQuote);
+    // if (widget.likedQuote.isNotEmpty) {
+    //   favoriteQuotes.add(widget.likedQuote);
+    // }
+  }
+
+  Future<void> _getFavoriteQuotes() async {
+    final quotes = await DatabaseService.instance.getAllFavoriteQuotes();
+
+    if (mounted) {
+      setState(() => _favoriteQuotes = quotes);
     }
   }
 
@@ -41,7 +53,7 @@ class _FavoriteListScreenState extends State<FavoriteListScreen> {
     return Scaffold(
       body: ListView.separated(
         padding: const EdgeInsets.all(16),
-        itemCount: favoriteQuotes.length,
+        itemCount: _favoriteQuotes.length,
         itemBuilder: (BuildContext context, int index) {
           // return Container(
           //   padding: const EdgeInsets.all(32),
@@ -52,7 +64,8 @@ class _FavoriteListScreenState extends State<FavoriteListScreen> {
           // DatabaseConfig().selectQuoteById2(index);
 
           return ListTile(
-            title: Text(''),
+            // title: Text(''),
+            title: Text(_favoriteQuotes[index].quote.toString()),
             trailing: GestureDetector(
               onTap: () {
                 // _toggleFavorite(favoriteQuotes[index]);

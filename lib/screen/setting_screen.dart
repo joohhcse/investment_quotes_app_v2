@@ -12,7 +12,6 @@ class SettingScreen extends StatefulWidget {
 class SettingState extends State<SettingScreen> {
   int selectedOption = 0; // 초기 선택된 옵션 ?
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
