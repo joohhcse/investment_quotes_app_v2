@@ -52,7 +52,8 @@ class DatabaseService{
         await db.execute('''
           CREATE TABLE quotes_table (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            quote TEXT
+            quote TEXT,
+            isLiked INTEGER
           )
         ''');
 
@@ -92,8 +93,8 @@ class DatabaseService{
           batch.insert('quotes_table', quote.toMap());
         });
 
-        initialFavoriteQuotes.forEach((quote) {
-          batch.insert('favorite_table', quote.toMap());
+        initialFavoriteQuotes.forEach((favorite) {
+          batch.insert('favorite_table', favorite.toMap());
         });
 
         await batch.commit();
@@ -118,6 +119,16 @@ class DatabaseService{
     final db = await database;
     final quoteData = await db.query('quotes_table');
     return quoteData.map((e) => Quote.fromMap(e)).toList();
+  }
+  Future<int> getIsLikedById(int id) async {
+    final db = await database;
+    var result = await db.rawQuery('SELECT isLiked FROM quotes WHERE id=?', ['id']);
+
+    if (result.isNotEmpty) {
+      return result[0]['isLiked'] as int;
+    } else {
+      return 2; // 해당 id에 대한 데이터가 없을 경우
+    }
   }
 
   Future<String> selectQuoteById(int id) async {

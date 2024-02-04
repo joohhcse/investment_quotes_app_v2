@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:investment_quotes_app_v2/screen/favorite_list_screen.dart';
 import 'package:investment_quotes_app_v2/database/database_service.dart';
 import 'package:investment_quotes_app_v2/model/quote.dart';
+import 'package:investment_quotes_app_v2/model/Favorite.dart';
 
 class QuotesScreen extends StatefulWidget {
   const QuotesScreen({super.key});
@@ -39,21 +40,27 @@ class _QuotesScreenState extends State<QuotesScreen> {
     }
   }
 
+  //backup //20240204 : futureBuilder로 바꺼야할듯 : 비동기를 사용해야하니까
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageView.builder(
         itemCount: _quotes.length,
         itemBuilder: (context, index) {
+          print('body: PageView.builder( : index >>>>');
+          print(index);   // index = 0
+          int isLiked = DatabaseService.instance.getIsLikedById(index + 1);
           return QuotePage(
             quote: _quotes[index].quote.toString(),
             onLike: () async {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (context) => FavoriteListScreen(likedQuote: quotes[index]),
-              //   ),
-              // );
+              // if(!isLiked) {
+              //   Favorite favorite = Favorite(
+              //     // id: index,
+              //     quote: _quotes[index].quote.toString(),
+              //     date: DateTime.now(),
+              //   );
+              //   await DatabaseService.instance.insertFavoriteQuote(favorite);
+              // }
             },
           );
         },
@@ -61,6 +68,85 @@ class _QuotesScreenState extends State<QuotesScreen> {
       ),
     );
   }
+
+  //try test2
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Scaffold(
+  //     body: PageView.builder(
+  //       itemCount: _quotes.length,
+  //       itemBuilder: (context, index) {
+  //         int currentId = index;
+  //         print(currentId);
+  //         return QuotePage(
+  //           quote: _quotes[index].quote.toString(),
+  //           onLike: () async {
+  //             // if(!isLiked) {
+  //             //   Favorite favorite = Favorite(
+  //             //     // id: index,
+  //             //     quote: _quotes[index].quote.toString(),
+  //             //     date: DateTime.now(),
+  //             //   );
+  //             //   await DatabaseService.instance.insertFavoriteQuote(favorite);
+  //             }
+  //           },
+  //         );
+  //       },
+  //       physics: BouncingScrollPhysics(),
+  //     ),
+  //   );
+  // }
+
+  //try test 1
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Scaffold(
+  //     body: PageView.builder(
+  //       itemCount: _quotes.length,
+  //       itemBuilder: (context, index) {
+  //         return FutureBuilder<int?>(
+  //           future: DatabaseService.instance.getIsLikedById(index),
+  //           builder: (BuildContext context, AsyncSnapshot<int?> snapshot) {
+  //             print('return FutureBuilder<int?>(');
+  //             print(index);
+  //             if (snapshot.connectionState == ConnectionState.waiting) {
+  //               // 데이터 로딩 중
+  //               return CircularProgressIndicator();
+  //             } else if (snapshot.hasError) {
+  //               // 에러 발생
+  //               return Text('Error: ${snapshot.error}');
+  //             } else {
+  //               // 데이터 로딩 완료
+  //               int? isLiked = snapshot.data;
+  //
+  //               return QuotePage(
+  //                 quote: _quotes[index].quote.toString(),
+  //                 onLike: () async {
+  //                   if (isLiked != null && isLiked == 1) {
+  //                     // 이미 좋아요를 누른 상태일 때의 처리
+  //                     // TODO: 추가적인 로직 구현
+  //                     print('이미 좋아요를 누른 상태일 때의 처리');
+  //                   } else {
+  //                     // 좋아요를 누르지 않은 상태일 때의 처리
+  //                     // TODO: 추가적인 로직 구현
+  //                     print('좋아요를 누르지 않은 상태일 때의 처리');
+  //                   }
+  //                 },
+  //                 isLiked: isLiked == 1, // isLiked가 1이면 true, 아니면 false
+  //               );
+  //             }
+  //           },
+  //         );
+  //
+  //       },
+  //       physics: BouncingScrollPhysics(),
+  //     ),
+  //   );
+  // }
+
+
+
+
 
 // Future<void> addFavorite(String quote) async {
 //   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -78,6 +164,7 @@ class QuotePage extends StatelessWidget {
   final VoidCallback onLike;
 
   // QuotePage({required this.quote});
+  // QuotePage({required this.quote, required this.onLike, required bool isLiked});
   QuotePage({required this.quote, required this.onLike});
 
   @override
