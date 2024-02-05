@@ -24,6 +24,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
+  // _HomeScreenState 에서 db init 필요없음 !
   // final DatabaseConfig _databaseConfig = DatabaseConfig();
   // Future<List<Quote>> _quoteList = DatabaseConfig()
   //     .databaseInit()

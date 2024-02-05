@@ -30,7 +30,7 @@ class _QuotesScreenState extends State<QuotesScreen> {
   void initState() {
     super.initState();
     _getQuotes();
-    _quotes.shuffle();  //temp remove
+    //_quotes.shuffle();  // _quotes.shuffle() 적용안됨 
   }
 
   Future<void> _getQuotes() async {
@@ -47,20 +47,52 @@ class _QuotesScreenState extends State<QuotesScreen> {
       body: PageView.builder(
         itemCount: _quotes.length,
         itemBuilder: (context, index) {
-          print('body: PageView.builder( : index >>>>');
-          print(index);   // index = 0
-          int isLiked = DatabaseService.instance.getIsLikedById(index + 1);
+          // print(index);   // index = 0 ~
+          // int isLiked = DatabaseService.instance.getIsLikedById(index + 1);
           return QuotePage(
             quote: _quotes[index].quote.toString(),
             onLike: () async {
-              // if(!isLiked) {
-              //   Favorite favorite = Favorite(
-              //     // id: index,
-              //     quote: _quotes[index].quote.toString(),
-              //     date: DateTime.now(),
-              //   );
-              //   await DatabaseService.instance.insertFavoriteQuote(favorite);
-              // }
+              // String strIsLiked = _quotes[index].isLiked.toString();
+              // print('strIsLiked : ' + strIsLiked);  //false
+
+              if(!_quotes[index].isLiked) {   // favorite_list에 추가
+                Favorite favorite = Favorite(
+                  id: index,
+                  quote: _quotes[index].quote.toString(),
+                  date: DateTime.now(),
+                );
+
+                print('[if] favorite.id >> ' + favorite.id.toString());
+
+                //Quote isLiked를 true로 업데이트
+                Quote quote = Quote(
+                  id: index,
+                  quote: _quotes[index].quote.toString(),
+                  isLiked: true,
+                );
+                print('updateQuoteById >>> ');
+                await DatabaseService.instance.updateQuoteById(quote);
+                print(quote.id.toString());
+                print(quote.quote.toString());
+                print(quote.isLiked.toString());
+
+                print('insertFavoriteQuote >>> ');
+                await DatabaseService.instance.insertFavoriteQuote(favorite);
+                print(favorite.id.toString());
+                print(favorite.quote.toString());
+                print(favorite.date.toString());
+
+                // setState 로 커밋하듯이 해야하나???
+                // https://iosroid.tistory.com/44
+                // var newMemberList = await _getMember();
+                // setState(() {
+                //   memberList = newMemberList;
+                // });
+              }
+              else {  //favorite_list에서 제거
+                print('[else] delete favorite.id >> ' + index.toString());
+                await DatabaseService.instance.deleteFavoriteQuote(index);
+              }
             },
           );
         },

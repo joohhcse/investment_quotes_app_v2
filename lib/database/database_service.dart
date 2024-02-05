@@ -59,7 +59,7 @@ class DatabaseService{
 
         await db.execute('''
           CREATE TABLE favorite_table (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id INTEGER,
             quote TEXT,
             date TEXT
           )
@@ -82,11 +82,7 @@ class DatabaseService{
           Quote(id: 12, quote: '12', isLiked: false),
         ];
 
-        List<Favorite> initialFavoriteQuotes = [
-          Favorite(id: 1, quote: '11111이것은 성공적인 투자 비결 중 하나다.\n주식이 아닌 회사에 집중하라. \n\n - 피터 린치', date: DateTime.now()),
-          Favorite(id: 2, quote: '22222나는 형편없는 산업에서 훌륭한 회사를 항상 찾고 있다. \n컴퓨터나 의료 기술과 같이 빠르게 성장하는 위대한 산업은 너무 많은 관심과 너무 많은 경쟁자를 끌어들인다. \n\n - 피터 린치', date: DateTime.now()),
-          Favorite(id: 3, quote: '33333다른 사람들이 다음 기적을 쫓고 있을 때에도 \n당신이 이해하고, 믿고, 지키려고 하는 것만 사라. \n\n - 피터 린치 ', date: DateTime.now()),
-        ];
+        List<Favorite> initialFavoriteQuotes = [];
 
         Batch batch = db.batch();
         initialQuotes.forEach((quote) {
@@ -144,10 +140,20 @@ class DatabaseService{
     }
   }
 
+  Future<int> updateQuoteById(Quote quote) async {
+    final db = await database;
+    return await db.update(
+      'quotes_table',
+      quote.toMap(),
+      where: 'id = ?',
+      whereArgs: [quote.id],
+    );
+  }
+
   //favorite_table
   Future<List<Favorite>> getAllFavoriteQuotes() async {
     final db = await database;
-    final quoteData = await db.query('favorite_table');
+    final quoteData = await db.query('favorite_table', orderBy: 'date');
     return quoteData.map((e) => Favorite.fromMap(e)).toList();
   }
 
@@ -158,6 +164,14 @@ class DatabaseService{
     return quoteWithId;
   }
 
+  Future<int> deleteFavoriteQuote(int id) async {
+    final Database db = await database;
+    return await db.delete(
+      'favorite_table',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
 
 }
 
