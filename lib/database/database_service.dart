@@ -68,18 +68,18 @@ class DatabaseService{
         // await db.execute("CREATE TABLE quotes_table (id INTEGER PRIMARY KEY AUTOINCREMENT, quote TEXT)");
 
         List<Quote> initialQuotes = [
-          Quote(id: 1, quote: '1이것은 성공적인 투자 비결 중 하나다.\n주식이 아닌 회사에 집중하라. \n\n - 피터 린치', isLiked: false),
-          Quote(id: 2, quote: '2나는 형편없는 산업에서 훌륭한 회사를 항상 찾고 있다. \n컴퓨터나 의료 기술과 같이 빠르게 성장하는 위대한 산업은 너무 많은 관심과 너무 많은 경쟁자를 끌어들인다. \n\n - 피터 린치', isLiked: false),
-          Quote(id: 3, quote: '3다른 사람들이 다음 기적을 쫓고 있을 때에도 \n당신이 이해하고, 믿고, 지키려고 하는 것만 사라. \n\n - 피터 린치 ', isLiked: false),
-          Quote(id: 4, quote: '4기본적인 이야기는 단순하고 끝이 없다. \n주식은 복권이 아니다. \n모든 주식에는 회사가 붙어 있다. \n\n - 피터 린치', isLiked: false),
-          Quote(id: 5, quote: '5이것은 성공적인 투자 비결 중 하나다.\n주식이 아닌 회사에 집중하라. \n\n - 피터 린치', isLiked: false),
-          Quote(id: 6, quote: '6나는 형편없는 산업에서 훌륭한 회사를 항상 찾고 있다. \n컴퓨터나 의료 기술과 같이 빠르게 성장하는 위대한 산업은 너무 많은 관심과 너무 많은 경쟁자를 끌어들인다. \n\n - 피터 린치', isLiked: false),
-          Quote(id: 7, quote: '7다른 사람들이 다음 기적을 쫓고 있을 때에도 \n당신이 이해하고, 믿고, 지키려고 하는 것만 사라. \n\n - 피터 린치', isLiked: false),
-          Quote(id: 8, quote: '8기본적인 이야기는 단순하고 끝이 없다. \n주식은 복권이 아니다. \n모든 주식에는 회사가 붙어 있다. \n\n - 피터 린치', isLiked: false),
-          Quote(id: 9, quote: '9', isLiked: false),
-          Quote(id: 10, quote: '10', isLiked: false),
-          Quote(id: 11, quote: '11', isLiked: false),
-          Quote(id: 12, quote: '12', isLiked: false),
+          Quote(id: 1, quote: '1이것은 성공적인 투자 비결 중 하나다.\n주식이 아닌 회사에 집중하라. \n\n - 피터 린치', isLiked: 0),
+          Quote(id: 2, quote: '2나는 형편없는 산업에서 훌륭한 회사를 항상 찾고 있다. \n컴퓨터나 의료 기술과 같이 빠르게 성장하는 위대한 산업은 너무 많은 관심과 너무 많은 경쟁자를 끌어들인다. \n\n - 피터 린치', isLiked: 0),
+          Quote(id: 3, quote: '3다른 사람들이 다음 기적을 쫓고 있을 때에도 \n당신이 이해하고, 믿고, 지키려고 하는 것만 사라. \n\n - 피터 린치 ', isLiked: 0),
+          Quote(id: 4, quote: '4기본적인 이야기는 단순하고 끝이 없다. \n주식은 복권이 아니다. \n모든 주식에는 회사가 붙어 있다. \n\n - 피터 린치', isLiked: 0),
+          Quote(id: 5, quote: '5이것은 성공적인 투자 비결 중 하나다.\n주식이 아닌 회사에 집중하라. \n\n - 피터 린치', isLiked: 0),
+          Quote(id: 6, quote: '6나는 형편없는 산업에서 훌륭한 회사를 항상 찾고 있다. \n컴퓨터나 의료 기술과 같이 빠르게 성장하는 위대한 산업은 너무 많은 관심과 너무 많은 경쟁자를 끌어들인다. \n\n - 피터 린치', isLiked: 0),
+          Quote(id: 7, quote: '7다른 사람들이 다음 기적을 쫓고 있을 때에도 \n당신이 이해하고, 믿고, 지키려고 하는 것만 사라. \n\n - 피터 린치', isLiked: 0),
+          Quote(id: 8, quote: '8기본적인 이야기는 단순하고 끝이 없다. \n주식은 복권이 아니다. \n모든 주식에는 회사가 붙어 있다. \n\n - 피터 린치', isLiked: 0),
+          Quote(id: 9, quote: '9', isLiked: 0),
+          Quote(id: 10, quote: '10', isLiked: 0),
+          Quote(id: 11, quote: '11', isLiked: 0),
+          Quote(id: 12, quote: '12', isLiked: 0),
         ];
 
         List<Favorite> initialFavoriteQuotes = [];
@@ -127,6 +127,22 @@ class DatabaseService{
     }
   }
 
+  //hhjoo 20240206 add
+  Future<Quote?> getQuoteById(int id) async {
+    final db = await database;
+    final List<Map<String, dynamic>> quoteData = await db.query(
+      _quotesTable,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+
+    if(quoteData.isEmpty) {
+      return null;
+    }
+
+    return Quote.fromMap(quoteData.first);
+  }
+
   Future<String> selectQuoteById(int id) async {
     final db = await database;
     var quote = await db.rawQuery('SELECT quote FROM quotes_table WHERE id=?', ['id']);
@@ -140,7 +156,8 @@ class DatabaseService{
     }
   }
 
-  Future<int> updateQuoteById(Quote quote) async {
+  //hhjoo 202402026 try
+  Future<int> updateQuoteByQuote(Quote quote) async {
     final db = await database;
     return await db.update(
       'quotes_table',
@@ -148,6 +165,11 @@ class DatabaseService{
       where: 'id = ?',
       whereArgs: [quote.id],
     );
+  }
+
+  Future<void> updateQuoteIsLikedById(int id, int isLiked) async {
+    final db = await database;
+    await db.rawQuery('UPDATE quotes_table SET isLiked = ? WHERE id=?', [id, isLiked]);
   }
 
   //favorite_table

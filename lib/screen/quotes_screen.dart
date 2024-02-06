@@ -41,65 +41,133 @@ class _QuotesScreenState extends State<QuotesScreen> {
   }
 
   //backup //20240204 : futureBuilder로 바꺼야할듯 : 비동기를 사용해야하니까
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: PageView.builder(
-        itemCount: _quotes.length,
-        itemBuilder: (context, index) {
-          // print(index);   // index = 0 ~
-          // int isLiked = DatabaseService.instance.getIsLikedById(index + 1);
-          return QuotePage(
-            quote: _quotes[index].quote.toString(),
-            onLike: () async {
-              // String strIsLiked = _quotes[index].isLiked.toString();
-              // print('strIsLiked : ' + strIsLiked);  //false
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Scaffold(
+  //     body: PageView.builder(
+  //       itemCount: _quotes.length,
+  //       itemBuilder: (context, index) {
+  //         // print(index);   // index = 0 ~
+  //         // int isLiked = DatabaseService.instance.getIsLikedById(index + 1);
+  //         return QuotePage(
+  //           quote: _quotes[index].quote.toString(),
+  //           onLike: () async {
+  //             // String strIsLiked = _quotes[index].isLiked.toString();
+  //             // print('strIsLiked : ' + strIsLiked);  //false
+  //
+  //             if(!_quotes[index].isLiked) {   // favorite_list에 추가
+  //               Favorite favorite = Favorite(
+  //                 id: index,
+  //                 quote: _quotes[index].quote.toString(),
+  //                 date: DateTime.now(),
+  //               );
+  //
+  //               print('[if] favorite.id >> ' + favorite.id.toString());
+  //
+  //               //Quote isLiked를 true로 업데이트
+  //               Quote quote = Quote(
+  //                 id: index,
+  //                 quote: _quotes[index].quote.toString(),
+  //                 isLiked: true,
+  //               );
+  //               print('updateQuoteById >>> ');
+  //               await DatabaseService.instance.updateQuoteById(quote);
+  //               print(quote.id.toString());
+  //               print(quote.quote.toString());
+  //               print(quote.isLiked.toString());
+  //
+  //               print('insertFavoriteQuote >>> ');
+  //               await DatabaseService.instance.insertFavoriteQuote(favorite);
+  //               print(favorite.id.toString());
+  //               print(favorite.quote.toString());
+  //               print(favorite.date.toString());
+  //
+  //               // setState 로 커밋하듯이 해야하나???
+  //               // https://iosroid.tistory.com/44
+  //               // var newMemberList = await _getMember();
+  //               // setState(() {
+  //               //   memberList = newMemberList;
+  //               // });
+  //             }
+  //             else {  //favorite_list에서 제거
+  //               print('[else] delete favorite.id >> ' + index.toString());
+  //               await DatabaseService.instance.deleteFavoriteQuote(index);
+  //             }
+  //           },
+  //         );
+  //       },
+  //       physics: BouncingScrollPhysics(),
+  //     ),
+  //   );
+  // }
 
-              if(!_quotes[index].isLiked) {   // favorite_list에 추가
-                Favorite favorite = Favorite(
-                  id: index,
-                  quote: _quotes[index].quote.toString(),
-                  date: DateTime.now(),
-                );
+//try test 1
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    body: PageView.builder(
+      itemCount: _quotes.length,
+      itemBuilder: (context, index) {
+        return FutureBuilder<void>(
+          future: DatabaseService.instance.getQuoteById(index),
+          builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              // 데이터 로딩 중
+              return CircularProgressIndicator(); // 로딩 애니메이션
+            } else if (snapshot.hasError) {
+              // 에러 발생
+              return Text('Error: ${snapshot.error}');
+            } else {
+              // 데이터 로딩 완료
+              // int? isLiked = snapshot.data;
 
-                print('[if] favorite.id >> ' + favorite.id.toString());
+              return QuotePage(
+                quote: _quotes[index].quote.toString(),
+                onLike: () async {
+                  print(_quotes[index].id.toString());
+                  print(_quotes[index].quote.toString());
+                  print(_quotes[index].isLiked.toString());
 
-                //Quote isLiked를 true로 업데이트
-                Quote quote = Quote(
-                  id: index,
-                  quote: _quotes[index].quote.toString(),
-                  isLiked: true,
-                );
-                print('updateQuoteById >>> ');
-                await DatabaseService.instance.updateQuoteById(quote);
-                print(quote.id.toString());
-                print(quote.quote.toString());
-                print(quote.isLiked.toString());
+                  if(_quotes[index].isLiked == 0) {
+                    Favorite favorite = Favorite(
+                      id: _quotes[index].id,
+                      quote: _quotes[index].quote.toString(),
+                      date: DateTime.now(),
+                    );
+                    DatabaseService.instance.insertFavoriteQuote(favorite);
+                    print('insertFavoriteQuote >> id : ' + _quotes[index].id.toString());
 
-                print('insertFavoriteQuote >>> ');
-                await DatabaseService.instance.insertFavoriteQuote(favorite);
-                print(favorite.id.toString());
-                print(favorite.quote.toString());
-                print(favorite.date.toString());
+                    // Quote quote = Quote(
+                    //   quote: _quotes[index].quote.toString(),
+                    //   isLiked: true,
+                    // );
+                    DatabaseService.instance.updateQuoteIsLikedById(_quotes[index].id!, 1); // update 안됨
 
-                // setState 로 커밋하듯이 해야하나???
-                // https://iosroid.tistory.com/44
-                // var newMemberList = await _getMember();
-                // setState(() {
-                //   memberList = newMemberList;
-                // });
-              }
-              else {  //favorite_list에서 제거
-                print('[else] delete favorite.id >> ' + index.toString());
-                await DatabaseService.instance.deleteFavoriteQuote(index);
-              }
-            },
-          );
-        },
-        physics: BouncingScrollPhysics(),
-      ),
-    );
-  }
+                  }
+                  else {
+                    DatabaseService.instance.deleteFavoriteQuote(_quotes[index].id!);
+                    print('deleteFavoriteQuote >> id : ' + _quotes[index].id.toString());
+
+                    // Quote quote = Quote(
+                    //   quote: _quotes[index].quote.toString(),
+                    //   isLiked: false,
+                    // );
+                    DatabaseService.instance.updateQuoteIsLikedById(_quotes[index].id!, 0); // update 안됨
+
+                  }
+                },
+                // isLiked: isLiked == 1, // isLiked가 1이면 true, 아니면 false
+              );
+            }
+          },
+        );
+
+      },
+      physics: BouncingScrollPhysics(),
+    ),
+  );
+}
+
 
   //try test2
   // @override
@@ -129,52 +197,6 @@ class _QuotesScreenState extends State<QuotesScreen> {
   //   );
   // }
 
-  //try test 1
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     body: PageView.builder(
-  //       itemCount: _quotes.length,
-  //       itemBuilder: (context, index) {
-  //         return FutureBuilder<int?>(
-  //           future: DatabaseService.instance.getIsLikedById(index),
-  //           builder: (BuildContext context, AsyncSnapshot<int?> snapshot) {
-  //             print('return FutureBuilder<int?>(');
-  //             print(index);
-  //             if (snapshot.connectionState == ConnectionState.waiting) {
-  //               // 데이터 로딩 중
-  //               return CircularProgressIndicator();
-  //             } else if (snapshot.hasError) {
-  //               // 에러 발생
-  //               return Text('Error: ${snapshot.error}');
-  //             } else {
-  //               // 데이터 로딩 완료
-  //               int? isLiked = snapshot.data;
-  //
-  //               return QuotePage(
-  //                 quote: _quotes[index].quote.toString(),
-  //                 onLike: () async {
-  //                   if (isLiked != null && isLiked == 1) {
-  //                     // 이미 좋아요를 누른 상태일 때의 처리
-  //                     // TODO: 추가적인 로직 구현
-  //                     print('이미 좋아요를 누른 상태일 때의 처리');
-  //                   } else {
-  //                     // 좋아요를 누르지 않은 상태일 때의 처리
-  //                     // TODO: 추가적인 로직 구현
-  //                     print('좋아요를 누르지 않은 상태일 때의 처리');
-  //                   }
-  //                 },
-  //                 isLiked: isLiked == 1, // isLiked가 1이면 true, 아니면 false
-  //               );
-  //             }
-  //           },
-  //         );
-  //
-  //       },
-  //       physics: BouncingScrollPhysics(),
-  //     ),
-  //   );
-  // }
 
 
 

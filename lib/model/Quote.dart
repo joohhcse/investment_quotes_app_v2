@@ -1,7 +1,7 @@
 class Quote {
   final int? id;
   final String quote;
-  final bool isLiked;
+  final int isLiked;
 
   const Quote({
     this.id,
@@ -12,7 +12,7 @@ class Quote {
   Quote copyWith({
     int? id,
     String? quote,
-    bool? isLiked,
+    int? isLiked,
   }) {
     return Quote(
       id: id ?? this.id,
@@ -25,7 +25,7 @@ class Quote {
     return {
       'id': id,
       'quote': quote,
-      'isLiked' : isLiked ? 1 : 0,
+      'isLiked' : isLiked,
     };
   }
 
@@ -33,7 +33,7 @@ class Quote {
     return Quote(
       id: map['id'] as int,
       quote: map['quote'] as String,
-      isLiked: map['isLiked'] as int == 1,
+      isLiked: map['isLiked'] as int,
     );
   }
 
