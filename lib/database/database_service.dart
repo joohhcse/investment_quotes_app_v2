@@ -116,16 +116,16 @@ class DatabaseService{
     final quoteData = await db.query('quotes_table');
     return quoteData.map((e) => Quote.fromMap(e)).toList();
   }
-  Future<int> getIsLikedById(int id) async {
-    final db = await database;
-    var result = await db.rawQuery('SELECT isLiked FROM quotes WHERE id=?', ['id']);
-
-    if (result.isNotEmpty) {
-      return result[0]['isLiked'] as int;
-    } else {
-      return 2; // 해당 id에 대한 데이터가 없을 경우
-    }
-  }
+  // Future<int> getIsLikedById(int id) async {
+  //   final db = await database;
+  //   var result = await db.rawQuery('SELECT isLiked FROM quotes WHERE id=?', ['id']);
+  //
+  //   if (result.isNotEmpty) {
+  //     return result[0]['isLiked'] as int;
+  //   } else {
+  //     return 2; // 해당 id에 대한 데이터가 없을 경우
+  //   }
+  // }
 
   //hhjoo 20240206 add
   Future<Quote?> getQuoteById(int id) async {
@@ -156,7 +156,12 @@ class DatabaseService{
     }
   }
 
-  //hhjoo 202402026 try
+  Future<int?> getIsLikedById(int id) async {
+    final db = await database;
+    return await db.rawUpdate('SELECT isLiked FROM quotes_table WHERE id=?', [id]);
+  }
+
+  //hhjoo 202402026 //not used
   Future<int> updateQuoteByQuote(Quote quote) async {
     final db = await database;
     return await db.update(
@@ -169,7 +174,7 @@ class DatabaseService{
 
   Future<void> updateQuoteIsLikedById(int id, int isLiked) async {
     final db = await database;
-    await db.rawQuery('UPDATE quotes_table SET isLiked = ? WHERE id=?', [id, isLiked]);
+    await db.rawUpdate('UPDATE quotes_table SET isLiked = ? WHERE id=?', [isLiked, id]);
   }
 
   //favorite_table
