@@ -70,6 +70,12 @@ class _QuotesScreenState extends State<QuotesScreen> {
 
                       DatabaseService.instance.updateQuoteIsLikedById(_quotes[index].id!, 1);
 
+                      print('즐찾에 추가 >>>>>');
+                      print('updateQuoteIsLikedById >> id : ' + _quotes[index].id.toString());
+                      print(_quotes[index].id.toString());
+                      print(_quotes[index].quote.toString());
+                      print(_quotes[index].isLiked.toString());
+
                     }
                     else {
                       DatabaseService.instance.deleteFavoriteQuote(_quotes[index].id!);
@@ -77,6 +83,7 @@ class _QuotesScreenState extends State<QuotesScreen> {
 
                       DatabaseService.instance.updateQuoteIsLikedById(_quotes[index].id!, 0);
 
+                      print('즐찾에서 삭제 >>>>>');
                       print('updateQuoteIsLikedById >> id : ' + _quotes[index].id.toString());
                       print(_quotes[index].id.toString());
                       print(_quotes[index].quote.toString());

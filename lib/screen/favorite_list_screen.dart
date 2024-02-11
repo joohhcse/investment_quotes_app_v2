@@ -24,10 +24,6 @@ class _FavoriteListScreenState extends State<FavoriteListScreen> {
     super.initState();
     _getFavoriteQuotes();
 
-    // 초기에 추가된 명언이 있다면 리스트에 추가
-    // if (widget.likedQuote.isNotEmpty) {
-    //   favoriteQuotes.add(widget.likedQuote);
-    // }
   }
 
   Future<void> _getFavoriteQuotes() async {
@@ -38,6 +34,8 @@ class _FavoriteListScreenState extends State<FavoriteListScreen> {
     }
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,23 +43,36 @@ class _FavoriteListScreenState extends State<FavoriteListScreen> {
         padding: const EdgeInsets.all(16),
         itemCount: _favoriteQuotes.length,
         itemBuilder: (BuildContext context, int index) {
-          // return Container(
-          //   padding: const EdgeInsets.all(32),
-          //   child: Text(favoriteQuotes[index]),
-          // );
-          
-          // Quote? quote = await selectQuoteById(index);
-          // DatabaseConfig().selectQuoteById2(index);
 
           return ListTile(
             title: Text(_favoriteQuotes[index].quote.toString()),
             trailing: GestureDetector(
-              onTap: () {
-                // _toggleFavorite(favoriteQuotes[index]);
+              onTap: () async {
+
+                // setState(() {
+                //   DatabaseService.instance.deleteFavoriteQuote(_favoriteQuotes[index].id!);
+                //   DatabaseService.instance.updateQuoteIsLikedById(_favoriteQuotes[index].id!, 0);
+                // });
+
+                try{
+                  await DatabaseService.instance.deleteFavoriteQuote(_favoriteQuotes[index].id!);
+                  await DatabaseService.instance.updateQuoteIsLikedById(_favoriteQuotes[index].id!, 0);
+
+                  
+                  //즉시 ListView에 반영해서 해당 index 제거
+                  setState(() {
+                    _favoriteQuotes.removeAt(index);
+                  });
+
+                }
+                catch(e) {
+                  print("An error occurred: $e");
+                }
+
               },
               child: Icon(
-                Icons.favorite,
-                color: Colors.red,
+                Icons.delete_rounded,
+                color: Colors.grey,
               ),
             ),
           );
@@ -72,6 +83,9 @@ class _FavoriteListScreenState extends State<FavoriteListScreen> {
   }
 
 
+
+
+//remove
 //_toggleFavorite()
 // SharedPreferences를 사용하여 즐겨찾기에 추가 또는 삭제
 // Future<void> _toggleFavorite(String quote) async {

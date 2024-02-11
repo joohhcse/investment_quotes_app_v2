@@ -89,7 +89,8 @@ class _HomeScreenState extends State<HomeScreen> {
         items: [
           BottomNavigationBarItem(
             // icon: Icon(Icons.content_paste),
-            icon: Icon(Icons.copy),
+            // icon: Icon(Icons.turned_in),
+            icon: Icon(Icons.sms_rounded),
             label: '클립보드 복사',
           ),
           BottomNavigationBarItem(
