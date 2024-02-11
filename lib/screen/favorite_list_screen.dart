@@ -7,8 +7,9 @@ import 'package:investment_quotes_app_v2/model/Favorite.dart';
 
 class FavoriteListScreen extends StatefulWidget {
   // const FavoriteListScreen({Key? key}) : super(key: key);
-  final String likedQuote;
-  FavoriteListScreen({required this.likedQuote});
+  // final String likedQuote;
+
+  // FavoriteListScreen({required this.likedQuote});
 
   @override
   State<FavoriteListScreen> createState() => _FavoriteListScreenState();
@@ -40,7 +41,8 @@ class _FavoriteListScreenState extends State<FavoriteListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView.separated(
-        padding: const EdgeInsets.all(16),
+        // padding: const EdgeInsets.LTRB(16,32,16,16),
+        padding: const EdgeInsets.fromLTRB(8, 32, 8, 16),
         itemCount: _favoriteQuotes.length,
         itemBuilder: (BuildContext context, int index) {
 

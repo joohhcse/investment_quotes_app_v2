@@ -4,19 +4,15 @@ import 'package:investment_quotes_app_v2/screen/favorite_list_screen.dart';
 import 'package:investment_quotes_app_v2/screen/quotes_screen.dart';
 import 'package:investment_quotes_app_v2/database/database_service.dart';
 import 'package:investment_quotes_app_v2/model/quote.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class HomeScreen extends StatefulWidget {
   // final bool isDarkMode;
 
   const HomeScreen({Key? key}) : super(key: key);
-  // const HomeScreen({
-  //
-  //   //sharedPreference로?? darkMode 정보저장?
-  //   // required this.isDarkMode,   //db 같이 저장해서 관리해야함....
-  //
-  //   Key? key,
-  // }) : super(key: key);
+
+  static final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(ThemeMode.light);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -24,19 +20,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
-  // _HomeScreenState 에서 db init 필요없음 !
-  // final DatabaseConfig _databaseConfig = DatabaseConfig();
-  // Future<List<Quote>> _quoteList = DatabaseConfig()
-  //     .databaseInit()
-  //     .then((_) => DatabaseConfig().selectQuotes());
-
-  // Quote newQuote = Quote(id: 1, quote: 'This is a new quote!', isLiked: false);
-  // _databaseConfig.insertQuote(newQuote);
 
   // 각 탭에 해당하는 화면들
   final List<Widget> _children = [
     QuotesScreen(),
-    FavoriteListScreen(likedQuote: 'aaa'),  // likedQuote에 like된 저장된 명언들 불러오기
+    FavoriteListScreen(),
     SettingScreen()
   ];
 
@@ -44,13 +32,74 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    _loadThemeMode();
   }
 
+  late SharedPreferences _prefs;
+
+  Future<void> _loadThemeMode() async {
+    _prefs = await SharedPreferences.getInstance();
+    final String? savedThemeMode = _prefs.getString('themeMode');
+
+    if(savedThemeMode == null) {
+      HomeScreen.themeNotifier.value = ThemeMode.light;
+    } else if(savedThemeMode == "ThemeMode.light") {
+      HomeScreen.themeNotifier.value = ThemeMode.light;
+    } else if(savedThemeMode == "ThemeMode.dark") {
+      HomeScreen.themeNotifier.value = ThemeMode.dark;
+    }
+
+    print('_loadThemeMode()');
+    print(savedThemeMode);
+
+  }
+
+  Future<void> _saveThemeMode(ThemeMode themeMode) async {
+    _prefs = await SharedPreferences.getInstance();
+
+    _prefs.setString('themeMode', themeMode.toString());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<ThemeMode>(
+      // ValueListenableBuilder를 사용하여 themeNotifier의 변경을 감지하고 화면을 다시 그립니다.
+      valueListenable: HomeScreen.themeNotifier,
+      builder: (context, themeMode, _) {
+        return MaterialApp(
+          themeMode: themeMode, // MaterialApp의 테마 모드를 themeNotifier의 값으로 설정합니다.
+          theme: ThemeData.light(),
+          darkTheme: ThemeData.dark(),
+          home: Scaffold(
+            body: _children[_currentIndex],
+            bottomNavigationBar: BottomNavigationBar(
+              currentIndex: _currentIndex,
+              onTap: onTabTapped,
+              items: [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.sms_rounded),
+                  label: '투자 명언',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.favorite),
+                  label: '즐겨찾기',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.settings),
+                  label: '설정',
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  //backup2
   // @override
   // Widget build(BuildContext context) {
   //   return MaterialApp(
-  //     // theme: isDarkMode ? ThemeData.dark() : ThemeData.light(),
-  //     theme: ThemeData.light(),
   //     home: Scaffold(
   //       body: _children[_currentIndex],
   //       bottomNavigationBar: BottomNavigationBar(
@@ -58,9 +107,8 @@ class _HomeScreenState extends State<HomeScreen> {
   //         onTap: onTabTapped,
   //         items: [
   //           BottomNavigationBarItem(
-  //             // icon: Icon(Icons.content_paste),
-  //             icon: Icon(Icons.copy),
-  //             label: '클립보드 복사',
+  //             icon: Icon(Icons.sms_rounded),
+  //             label: '투자 명언',
   //           ),
   //           BottomNavigationBarItem(
   //             icon: Icon(Icons.favorite),
@@ -76,79 +124,48 @@ class _HomeScreenState extends State<HomeScreen> {
   //   );
   // }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      // appBar: AppBar(
-      //   title: Text('하단바 메뉴 예제'),
-      // ),
-      body: _children[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: onTabTapped,
-        items: [
-          BottomNavigationBarItem(
-            // icon: Icon(Icons.content_paste),
-            // icon: Icon(Icons.turned_in),
-            icon: Icon(Icons.sms_rounded),
-            label: '클립보드 복사',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: '즐겨찾기',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: '설정',
-          ),
-        ],
-      ),
-    );
-  }
+  //backup
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Scaffold(
+  //     // appBar: AppBar(
+  //     //   title: Text('하단바 메뉴 예제'),
+  //     // ),
+  //     body: _children[_currentIndex],
+  //     bottomNavigationBar: BottomNavigationBar(
+  //       currentIndex: _currentIndex,
+  //       onTap: onTabTapped,
+  //       items: [
+  //         BottomNavigationBarItem(
+  //           // icon: Icon(Icons.content_paste),
+  //           // icon: Icon(Icons.turned_in),
+  //           icon: Icon(Icons.sms_rounded),
+  //           label: '투자 명언',
+  //         ),
+  //         BottomNavigationBarItem(
+  //           icon: Icon(Icons.favorite),
+  //           label: '즐겨찾기',
+  //         ),
+  //         BottomNavigationBarItem(
+  //           icon: Icon(Icons.settings),
+  //           label: '설정',
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
 
   void onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
     });
   }
-}
 
-// class SettingsScreen extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: SafeArea(
-//         child: Column(
-//           children: [
-//             // SettingsScreen()
-//           ],
-//         )
-//       ),
-//     );
-//   }
-// }
-//
-// class SettingRow extends StatelessWidget {
-//   final IconData icon;
-//   final String title;
-//
-//   const SettingRow({Key? key, required this.icon, required this.title})
-//       : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Padding(
-//       padding: const EdgeInsets.symmetric(vertical: 8),
-//       child: Row(
-//         children: [
-//           Icon(icon),
-//           SizedBox(width: 16),
-//           Text(
-//             title,
-//             style: TextStyle(fontSize: 16),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
+  // 앱이 종료될 때 SharedPreferences에 테마 모드를 저장
+  @override
+  void dispose() {
+    _saveThemeMode(HomeScreen.themeNotifier.value);
+    super.dispose();
+  }
+}

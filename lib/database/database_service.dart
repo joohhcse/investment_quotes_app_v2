@@ -40,10 +40,7 @@ class DatabaseService{
     var databasesPath = await getDatabasesPath();
     String path = join(databasesPath, 'quote_database.db');
 
-    print('_openDb >>>>>');
-    print(databasesPath);
-
-    await deleteDatabase(path);
+    // await deleteDatabase(path);  //remove // 이 코드로 계속 재실행하면 디비 초기화됨
 
     final quoteListDb = await openDatabase(
       path,

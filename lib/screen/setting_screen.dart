@@ -1,6 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:investment_quotes_app_v2/screen/quotes_screen.dart';
 import 'package:investment_quotes_app_v2/screen/home_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+bool isDarkMode = false;
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({Key? key}) : super(key: key);
@@ -13,6 +17,43 @@ class SettingState extends State<SettingScreen> {
   int selectedOption = 0; // 초기 선택된 옵션 ?
 
   @override
+  void initState() {
+    super.initState();
+    _loadThemeMode();
+  }
+
+  late SharedPreferences _prefs;
+
+  Future<void> _loadThemeMode() async {
+    _prefs = await SharedPreferences.getInstance();
+    final String? savedThemeMode = _prefs.getString('themeMode');
+
+    if(savedThemeMode == null) {
+      HomeScreen.themeNotifier.value = ThemeMode.light;
+      isDarkMode = false;
+    } else if(savedThemeMode == "ThemeMode.light") {
+      HomeScreen.themeNotifier.value = ThemeMode.light;
+      isDarkMode = false;
+    } else if(savedThemeMode == "ThemeMode.dark") {
+      HomeScreen.themeNotifier.value = ThemeMode.dark;
+      isDarkMode = true;
+    }
+
+    print('setting >>> _load :: ');
+    print(isDarkMode);
+
+  }
+
+  Future<void> _saveThemeMode(ThemeMode themeMode) async {
+    _prefs = await SharedPreferences.getInstance();
+
+    _prefs.setString('themeMode', themeMode.toString());
+
+    print('setting >> save >>>>');
+    print(themeMode.toString());
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -23,31 +64,40 @@ class SettingState extends State<SettingScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('푸시 알림'),
-                Switch(
-                  value: true, // 여기에 실제 설정값을 넣어주세요.
-                  onChanged: (value) {
-                    // 설정값 변경 로직을 넣어주세요.
-                  },
-                ),
-              ],
-            ),
             SizedBox(height: 16.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('다크 모드'),
-                Switch(
-                  value: false, // 여기에 실제 설정값을 넣어주세요.
-                  onChanged: (value) {
-                    setState(() {
+                // Switch(
+                //   value: false, // 여기에 실제 설정값을 넣어주세요.
+                //   onChanged: (value) {
+                //     setState(() {
+                //       value = !value;
+                //     });
+                //   },
+                // ),
+                CupertinoSwitch(
+                    value: isDarkMode,
+                    activeColor: CupertinoColors.activeBlue,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        isDarkMode = value ?? false;  //null이면 false입력
 
-                    });
-                  },
-                ),
+                        if(isDarkMode == true) {
+                          HomeScreen.themeNotifier.value = ThemeMode.dark;
+
+                          _saveThemeMode(ThemeMode.dark);
+                        }
+                        else {
+                          HomeScreen.themeNotifier.value = ThemeMode.light;
+
+                          _saveThemeMode(ThemeMode.light);
+                        }
+
+                      });
+                    }
+                )
               ],
             ),
             SizedBox(height: 16.0),
@@ -66,7 +116,7 @@ class SettingState extends State<SettingScreen> {
                         });
                       },
                     ),
-                    Text('옵션 1'),
+                    Text('옵션1'),
                   ],
                 ),
                 Row(
