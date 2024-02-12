@@ -49,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
       HomeScreen.themeNotifier.value = ThemeMode.dark;
     }
 
-    print('_loadThemeMode()');
+    print('home_screen _loadThemeMode()');
     print(savedThemeMode);
 
   }
