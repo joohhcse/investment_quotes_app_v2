@@ -4,7 +4,7 @@ import 'package:investment_quotes_app_v2/screen/quotes_screen.dart';
 import 'package:investment_quotes_app_v2/screen/home_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-bool isDarkMode = false;
+
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({Key? key}) : super(key: key);
@@ -16,6 +16,8 @@ class SettingScreen extends StatefulWidget {
 }
 
 class SettingState extends State<SettingScreen> {
+  bool isDarkMode = false;
+  double _fontSize = 20.0;
   int selectedOption = 0; // 초기 선택된 옵션 ?
 
   @override
@@ -53,16 +55,20 @@ class SettingState extends State<SettingScreen> {
     _prefs = await SharedPreferences.getInstance();
 
     _prefs.setString('themeMode', themeMode.toString());
-
-    if(themeMode.toString() == 'ThemeMode.dark') {
-      // SettingScreen.isDarkMode = true;
-    } else {
-      // SettingScreen.isDarkMode = false;
-    }
-
-    print('setting >> save >>>>');
-    print(themeMode.toString());
   }
+
+  _loadFontSize() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _fontSize = prefs.getDouble('fontSize') ?? 20.0;
+    });
+  }
+
+  _saveFontSize(double fontSize) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble('fontSize', fontSize);
+  }
+
 
   Future<bool> _getThemeMode() async {
     _prefs = await SharedPreferences.getInstance();
@@ -102,33 +108,89 @@ class SettingState extends State<SettingScreen> {
           if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           }
-          // final bool isDarkMode = snapshot.data ?? false;
+
+          // final bool isDarkMode = snapshot.data ?? false;  //final은 const같이 안변하는 상수인데 이래해놧엇네
+          isDarkMode = snapshot.data ?? false;
+
           print('FutureBuilder >>>>>');
           print(snapshot.data);
           isDarkMode = snapshot.data ?? false;
-          // Text('다크 모드');
-          return CupertinoSwitch(
-            value: isDarkMode,
-            onChanged: (bool? value) {
-                setState(() {
-                  isDarkMode = value ?? false; //null이면 false입력
+          return Padding(
+            padding: const EdgeInsets.all(20.0),
+            // child: Row(
+            //   // crossAxisAlignment: CrossAxisAlignment.start,
+            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //   crossAxisAlignment: CrossAxisAlignment.end,
+            //   children: [
+            //     Text(
+            //       'Dark Mode',
+            //       style: TextStyle(fontSize: 20),
+            //     ),
+            //     CupertinoSwitch(
+            //       value: isDarkMode,
+            //       onChanged: (bool value) {
+            //         setState(() {
+            //           // isDarkMode = value ?? false; //null이면 false입력
+            //           isDarkMode = value;
+            //
+            //           if (isDarkMode == true) {
+            //             HomeScreen.themeNotifier.value = ThemeMode.dark;
+            //             _saveThemeMode(ThemeMode.dark);
+            //           } else {
+            //             HomeScreen.themeNotifier.value = ThemeMode.light;
+            //             _saveThemeMode(ThemeMode.light);
+            //           }
+            //
+            //         });
+            //       },
+            //   ),
+            // ],
+            // ),
 
-                  // if (SettingScreen.isDarkMode == true) {
-                  //   print('CupertinoSwitch 다크모드');
-                  //   HomeScreen.themeNotifier.value = ThemeMode.dark;
-                  //   _saveThemeMode(ThemeMode.dark);
-                  // } else {
-                  //   print('CupertinoSwitch 라이트모드');
-                  //   HomeScreen.themeNotifier.value = ThemeMode.light;
-                  //   _saveThemeMode(ThemeMode.light);
-                  // }
+            //add test
+            child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Dark Mode',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  CupertinoSwitch(
+                    value: isDarkMode,
+                    onChanged: (bool value) {
+                      setState(() {
+                        // isDarkMode = value ?? false; //null이면 false입력
+                        isDarkMode = value;
 
-                  print('CupertinoSwitch value >> ' + value.toString());
-                  print('CupertinoSwitch isDarkMode >> ' + isDarkMode.toString());
+                        if (isDarkMode == true) {
+                          HomeScreen.themeNotifier.value = ThemeMode.dark;
+                          _saveThemeMode(ThemeMode.dark);
+                        } else {
+                          HomeScreen.themeNotifier.value = ThemeMode.light;
+                          _saveThemeMode(ThemeMode.light);
+                        }
 
-                });
-              },
-            );
+                      });
+                    },
+                  ),
+                ],
+              ),
+              SizedBox(height: 32.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Font Size',
+                    style: TextStyle(fontSize: 20),
+                  )
+                ],
+              )
+            ],
+            ),
+          );
         },
       )
     );
