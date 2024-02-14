@@ -5,8 +5,9 @@ import 'package:investment_quotes_app_v2/screen/quotes_screen.dart';
 import 'package:investment_quotes_app_v2/database/database_service.dart';
 import 'package:investment_quotes_app_v2/model/quote.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:investment_quotes_app_v2/ad_helper.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+
+// import 'package:investment_quotes_app_v2/ad_helper.dart';
+// import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -22,7 +23,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
-  BannerAd? _bannerAd;
+  // BannerAd? _bannerAd;
 
   //Flutter 앱에 AdMob 광고 추가 (Google공식문서)
   //https://codelabs.developers.google.com/codelabs/admob-ads-in-flutter?hl=ko#0
@@ -41,28 +42,29 @@ class _HomeScreenState extends State<HomeScreen> {
     _loadThemeMode();
 
     // TODO: Load a banner ad
-    BannerAd(
-      adUnitId: AdHelper.bannerAdUnitId,
-      request: AdRequest(),
-      size: AdSize.banner,
-      listener: BannerAdListener(
-        onAdLoaded: (ad) {
-          setState(() {
-            _bannerAd = ad as BannerAd;
-          });
-        },
-        onAdFailedToLoad: (ad, err) {
-          print('Failed to load a banner ad: ${err.message}');
-          ad.dispose();
-        },
-      ),
-    ).load();
+    // BannerAd(
+    //   adUnitId: AdHelper.bannerAdUnitId,
+    //   request: AdRequest(),
+    //   size: AdSize.banner,
+    //   listener: BannerAdListener(
+    //     onAdLoaded: (ad) {
+    //       setState(() {
+    //         _bannerAd = ad as BannerAd;
+    //       });
+    //     },
+    //     onAdFailedToLoad: (ad, err) {
+    //       print('Failed to load a banner ad: ${err.message}');
+    //       ad.dispose();
+    //     },
+    //   ),
+    // ).load();
   }
 
-  Future<InitializationStatus> _initGoogleMobileAds() {
-    // TODO: Initialize Google Mobile Ads SDK
-    return MobileAds.instance.initialize();
-  }
+  //for admop
+  // Future<InitializationStatus> _initGoogleMobileAds() {
+  //   // TODO: Initialize Google Mobile Ads SDK
+  //   return MobileAds.instance.initialize();
+  // }
 
   late SharedPreferences _prefs;
 
@@ -119,27 +121,39 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
             ),
-            bottomSheet: Container(
-              width: MediaQuery.of(context).size.width,
-              height: 50,
-              child: bottomSheetContent(),
-              // child: AdmobBanner(
-              //   adUnitId: 'ca-app-pub-3940256099942544/6300978111',
-              //   adSize: bannerSize!,
-              //   listener: (AdmobAdEvent event, Map<String, dynamic>? args) {
-              //       handleEvent(event, args, 'Banner');
-              //   },
-              //   onBannerCreated: (AdmobBannerController controller) {
-              //
-              //   },
-              // ),
 
-            )
+            //for admop
+            // bottomSheet: Container(
+            //   width: MediaQuery.of(context).size.width,
+            //   height: 50,
+            //   child: bottomSheetContent(),
+            // )
           ),
         );
       },
     );
   }
+
+  //for admop
+  // Widget bottomSheetContent() {
+  //   return Column(
+  //     mainAxisSize: MainAxisSize.min,
+  //     children: [
+  //       // 기타 내용들...
+  //       // AdMob 배너를 추가하는 부분
+  //       if (_bannerAd != null)
+  //         Align(
+  //           alignment: Alignment.topCenter,
+  //           child: Container(
+  //             width: _bannerAd!.size.width.toDouble(),
+  //             height: _bannerAd!.size.height.toDouble(),
+  //             child: AdWidget(ad: _bannerAd!),
+  //           ),
+  //         ),
+  //       // 기타 내용들...
+  //     ],
+  //   );
+  // }
 
   //backup2
   // @override
@@ -200,25 +214,7 @@ class _HomeScreenState extends State<HomeScreen> {
   //   );
   // }
 
-  Widget bottomSheetContent() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        // 기타 내용들...
-        // AdMob 배너를 추가하는 부분
-        if (_bannerAd != null)
-          Align(
-            alignment: Alignment.topCenter,
-            child: Container(
-              width: _bannerAd!.size.width.toDouble(),
-              height: _bannerAd!.size.height.toDouble(),
-              child: AdWidget(ad: _bannerAd!),
-            ),
-          ),
-        // 기타 내용들...
-      ],
-    );
-  }
+
 
   void onTabTapped(int index) {
     setState(() {

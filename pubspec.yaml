@@ -39,7 +39,7 @@ dependencies:
   path: ^1.8.1
   provider: 6.0.3
 
-  google_mobile_ads: ^1.2.0
+#  google_mobile_ads: ^1.2.0
 
   # sqflite_common_ffi: any
 

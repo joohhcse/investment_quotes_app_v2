@@ -9,16 +9,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SettingScreen extends StatefulWidget {
   const SettingScreen({Key? key}) : super(key: key);
 
-  // static bool isDarkMode = false;
-
   @override
   State<SettingScreen> createState() => SettingState();
 }
 
 class SettingState extends State<SettingScreen> {
-  bool isDarkMode = false;
+  bool isDarkMode = false;  // 여기에 다크모드 변수
   double _fontSize = 20.0;
-  int selectedOption = 0; // 초기 선택된 옵션 ?
+  int selectedOption = 0; // 초기 선택된 옵션 
 
   @override
   void initState() {
@@ -34,21 +32,11 @@ class SettingState extends State<SettingScreen> {
 
     if(savedThemeMode == null) {
       HomeScreen.themeNotifier.value = ThemeMode.light;
-      // SettingScreen.isDarkMode = false;
-      print('(1) setting >>> _loadThemeMode ');
     } else if(savedThemeMode == "ThemeMode.light") {
       HomeScreen.themeNotifier.value = ThemeMode.light;
-      // SettingScreen.isDarkMode = false;
-      print('(2) setting >>> _loadThemeMode ');
     } else if(savedThemeMode == "ThemeMode.dark") {
       HomeScreen.themeNotifier.value = ThemeMode.dark;
-      // SettingScreen.isDarkMode = true;
-      print('(3) setting >>> _loadThemeMode ');
     }
-
-    print('setting >>> _load :: ');
-    // print(SettingScreen.isDarkMode);
-
   }
 
   Future<void> _saveThemeMode(ThemeMode themeMode) async {
@@ -89,9 +77,7 @@ class SettingState extends State<SettingScreen> {
     } else {
       return false;
     }
-
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -112,42 +98,9 @@ class SettingState extends State<SettingScreen> {
           // final bool isDarkMode = snapshot.data ?? false;  //final은 const같이 안변하는 상수인데 이래해놧엇네
           isDarkMode = snapshot.data ?? false;
 
-          print('FutureBuilder >>>>>');
-          print(snapshot.data);
-          isDarkMode = snapshot.data ?? false;
           return Padding(
             padding: const EdgeInsets.all(20.0),
-            // child: Row(
-            //   // crossAxisAlignment: CrossAxisAlignment.start,
-            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //   crossAxisAlignment: CrossAxisAlignment.end,
-            //   children: [
-            //     Text(
-            //       'Dark Mode',
-            //       style: TextStyle(fontSize: 20),
-            //     ),
-            //     CupertinoSwitch(
-            //       value: isDarkMode,
-            //       onChanged: (bool value) {
-            //         setState(() {
-            //           // isDarkMode = value ?? false; //null이면 false입력
-            //           isDarkMode = value;
-            //
-            //           if (isDarkMode == true) {
-            //             HomeScreen.themeNotifier.value = ThemeMode.dark;
-            //             _saveThemeMode(ThemeMode.dark);
-            //           } else {
-            //             HomeScreen.themeNotifier.value = ThemeMode.light;
-            //             _saveThemeMode(ThemeMode.light);
-            //           }
-            //
-            //         });
-            //       },
-            //   ),
-            // ],
-            // ),
 
-            //add test
             child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -182,10 +135,10 @@ class SettingState extends State<SettingScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'Font Size',
-                    style: TextStyle(fontSize: 20),
-                  )
+                  // Text(
+                  //   'Font Size',
+                  //   style: TextStyle(fontSize: 20),
+                  // )
                 ],
               )
             ],
