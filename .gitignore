@@ -9,6 +9,8 @@
 .history
 .svn/
 migrate_working_dir/
+ad_helper.dart
+AndroidManifest.xml
 
 # IntelliJ related
 *.iml
