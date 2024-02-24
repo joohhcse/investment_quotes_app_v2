@@ -28,6 +28,10 @@ class _HomeScreenState extends State<HomeScreen> {
   //Flutter 앱에 AdMob 광고 추가 (Google공식문서)
   //https://codelabs.developers.google.com/codelabs/admob-ads-in-flutter?hl=ko#0
 
+  //hhjoo 20240224
+  // 광고 게재가 제한됨
+  // 검토 중
+
   // 각 탭에 해당하는 화면들
   final List<Widget> _children = [
     QuotesScreen(),
