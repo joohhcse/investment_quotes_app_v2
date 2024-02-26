@@ -32,14 +32,16 @@ dependencies:
   flutter:
     sdk: flutter
 
-  #  google_mobile_ads: ^3.1.0 # 파이어베이스 애드몹 패키지
+#  google_mobile_ads: ^3.1.0 # 파이어베이스 애드몹 패키지
+  google_mobile_ads: ^2.3.0 # 책: 코드팩토리 플러터 프로그래밍
+#  google_mobile_ads: ^0.11.0+4
+
   shared_preferences: ^2.0.13 # shared_preferences
 
   sqflite: ^2.0.0+3
   path: ^1.8.1
   provider: 6.0.3
 
-  google_mobile_ads: ^1.2.0
 
   # sqflite_common_ffi: any
 

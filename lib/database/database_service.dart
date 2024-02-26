@@ -5,19 +5,18 @@ import 'package:sqflite/sqflite.dart';
 
 
 class DatabaseService{
-  static final DatabaseService _database = DatabaseService._internal();
-  DatabaseService._internal() {
-    print('_openDb()');
-    _openDb();
-  }
+  // static final DatabaseService _database = DatabaseService._internal();
+  // DatabaseService._internal() {
+  //   _openDb();
+  // }
 
   static const DatabaseService instance = DatabaseService._();
 
   const DatabaseService._();
 
   static const String _quotesTable = 'quotes_table';
-  static const String _colId = 'id';
-  static const String _colQuote = 'quote';
+  // static const String _colId = 'id';
+  // static const String _colQuote = 'quote';
 
   static Database? _db;
 

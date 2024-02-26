@@ -6,9 +6,7 @@ import 'package:investment_quotes_app_v2/database/database_service.dart';
 import 'package:investment_quotes_app_v2/model/quote.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-// import 'package:investment_quotes_app_v2/ad_helper.dart';
-// import 'package:google_mobile_ads/google_mobile_ads.dart';
-
+import 'package:investment_quotes_app_v2/banner_ad_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   // final bool isDarkMode;
@@ -23,14 +21,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
-  // BannerAd? _bannerAd;
 
   //Flutter 앱에 AdMob 광고 추가 (Google공식문서)
   //https://codelabs.developers.google.com/codelabs/admob-ads-in-flutter?hl=ko#0
 
-  //hhjoo 20240224
-  // 광고 게재가 제한됨
-  // 검토 중
+  //hhjoo 20240224 // 광고 게재가 제한됨 // 검토 중
 
   // 각 탭에 해당하는 화면들
   final List<Widget> _children = [
@@ -44,24 +39,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _loadThemeMode();
-
-    // TODO: Load a banner ad
-    // BannerAd(
-    //   adUnitId: AdHelper.bannerAdUnitId,
-    //   request: AdRequest(),
-    //   size: AdSize.banner,
-    //   listener: BannerAdListener(
-    //     onAdLoaded: (ad) {
-    //       setState(() {
-    //         _bannerAd = ad as BannerAd;
-    //       });
-    //     },
-    //     onAdFailedToLoad: (ad, err) {
-    //       print('Failed to load a banner ad: ${err.message}');
-    //       ad.dispose();
-    //     },
-    //   ),
-    // ).load();
   }
 
   //for admop
@@ -126,12 +103,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
 
-            //for admop
-            // bottomSheet: Container(
-            //   width: MediaQuery.of(context).size.width,
-            //   height: 50,
-            //   child: bottomSheetContent(),
-            // )
           ),
         );
       },

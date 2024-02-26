@@ -9,8 +9,10 @@
 .history
 .svn/
 migrate_working_dir/
-ad_helper.dart
 AndroidManifest.xml
+banner_ad_widget.dart
+ad_helper.dart
+Info.plist
 
 # Remember to never publicly share your keystore.
 # See https://flutter.dev/docs/deployment/android#reference-the-keystore-from-the-app
