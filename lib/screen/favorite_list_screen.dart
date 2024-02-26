@@ -83,6 +83,7 @@ class _FavoriteListScreenState extends State<FavoriteListScreen> {
   //   );
   // }
 
+  //add BannerAdWidget
   @override
   Widget build(BuildContext context) {
     return Scaffold(
