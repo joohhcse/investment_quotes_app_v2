@@ -89,7 +89,7 @@ class _FavoriteListScreenState extends State<FavoriteListScreen> {
     return Scaffold(
       body: Column(
         children: [
-          BannerAdWidget(), // 광고 위젯 추가,
+          // BannerAdWidget(), // 광고 위젯 추가,
           Expanded(
             child: ListView.separated(
               padding: const EdgeInsets.fromLTRB(8, 24, 8, 16),
