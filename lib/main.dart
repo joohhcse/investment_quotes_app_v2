@@ -8,7 +8,6 @@ void main() async {
   MobileAds.instance.initialize();
 
   //flutter_windows_3.3.5-stable
-
   //https://github.com/MarcusNg/flutter_sqflite_todos
   runApp(
       MaterialApp(

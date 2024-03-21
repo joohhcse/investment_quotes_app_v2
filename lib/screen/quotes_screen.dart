@@ -100,17 +100,6 @@ class _QuotesScreenState extends State<QuotesScreen> {
       ),
     );
   }
-
-// Future<void> addFavorite(String quote) async {
-//   SharedPreferences prefs = await SharedPreferences.getInstance();
-//   List<String>? favorites = prefs.getStringList('favorites') ?? [];
-//   favorites.add(quote);
-//   prefs.setStringList('favorites', favorites);
-//   debugPrint('log > ');
-//   debugPrint(favorites.toString());
-// }
-
-
 }
 
   class QuotePage extends StatefulWidget {
