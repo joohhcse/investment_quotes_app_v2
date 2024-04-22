@@ -42,7 +42,6 @@ dependencies:
   path: ^1.8.1
   provider: 6.0.3
 
-
   # sqflite_common_ffi: any
 
   flutter_launcher_icons: "^0.7.2"
