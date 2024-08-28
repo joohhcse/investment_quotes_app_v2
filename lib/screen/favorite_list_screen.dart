@@ -7,6 +7,8 @@ import 'package:investment_quotes_app_v2/model/Favorite.dart';
 import 'package:investment_quotes_app_v2/banner_ad_widget.dart';
 
 class FavoriteListScreen extends StatefulWidget {
+  const FavoriteListScreen({super.key});
+
   @override
   State<FavoriteListScreen> createState() => _FavoriteListScreenState();
 }
